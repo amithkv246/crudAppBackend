@@ -88,3 +88,17 @@ exports.updateUser = async (request, response) => {
         return response.status(400).json("error:", error)
     }
 }
+
+
+exports.adPost = async (req, res) => {
+    const formData = req.files
+    try {
+        if (formData && formData.length > 0) {
+            return res.status(200).json({ msg: "images found" })
+        } else {
+            return res.status(400).json({ msg: "images not found" })
+        }
+    } catch (err) {
+        return res.status(500).json({ error: err.message })
+    }
+}
