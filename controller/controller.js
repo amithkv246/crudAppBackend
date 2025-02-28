@@ -91,9 +91,14 @@ exports.updateUser = async (request, response) => {
 
 
 exports.adPost = async (req, res) => {
-    const formData = req.files
+
+    console.log("")
+    console.log("Entered function body of adPost.")
+    console.log("req.file: ", req.file)
+
+    const formData = req.file
     try {
-        if (formData && formData.length > 0) {
+        if (formData) {
             return res.status(200).json({ msg: "images found" })
         } else {
             return res.status(400).json({ msg: "images not found" })
@@ -102,3 +107,4 @@ exports.adPost = async (req, res) => {
         return res.status(500).json({ error: err.message })
     }
 }
+
