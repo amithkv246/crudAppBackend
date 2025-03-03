@@ -45,7 +45,7 @@ exports.login = async (req, res) => {
         if (!passwordMatch) {
             return res.status(406).json("invalid credentials")
         } else {
-            const token = jwt.sign({ emailId: existingUser.email }, process.env.JWT_SECRET, { expiresIn: "1h" })
+            const token = jwt.sign({ emailId: existingUser.email }, process.env.JWT_SECRET, { expiresIn: "5h" })
             return res.status(200).json({ userDetails: existingUser, token })
         }
     } catch (err) {
@@ -92,17 +92,16 @@ exports.updateUser = async (request, response) => {
 
 exports.adPost = async (req, res) => {
     console.log("\n Entered function body of adPost.")
-    console.log("req.file: ", req.file)
+    console.log("req.files: ", req.files)
 
-    const formData = req.file
+    const formData = req.files
     try {
         if (formData) {
-            return res.status(200).json({ msg: "images found" })
+            return res.status(200).json({ msg: "data found" })
         } else {
-            return res.status(400).json({ msg: "images not found" })
+            return res.status(400).json({ msg: "no data found" })
         }
     } catch (err) {
         return res.status(500).json({ error: err.message })
     }
 }
-

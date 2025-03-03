@@ -8,6 +8,6 @@ router.post('/firstPost', firstPost)
 router.post('/register', register)
 router.post('/login', login)
 router.post('/updateUser', verifyToken, updateUser)
-router.post('/adPost', verifyToken, multerConfig.single("images"), adPost)
+router.post('/adPost', multerConfig.array("images",20), adPost)
 
 module.exports = router
