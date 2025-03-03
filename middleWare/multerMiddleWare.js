@@ -11,8 +11,7 @@ const createDirectoryIfNotExists = (dir) => {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        console.log("")
-        console.log("multer middleware")
+        console.log("\n multer middleware")
         console.log("req: ", req)
         console.log("file: ", file)
         const dir = './images/car';

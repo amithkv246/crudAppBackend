@@ -91,9 +91,7 @@ exports.updateUser = async (request, response) => {
 
 
 exports.adPost = async (req, res) => {
-
-    console.log("")
-    console.log("Entered function body of adPost.")
+    console.log("\n Entered function body of adPost.")
     console.log("req.file: ", req.file)
 
     const formData = req.file
