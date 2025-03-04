@@ -2,6 +2,8 @@ require("dotenv").config()
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const User = require("../database/schema/usersSchema")
+const AdForm = require("../database/schema/adFormSchema")
+const { v4: uuidv4 } = require('uuid');
 
 exports.firstGet = async (req, res) => {
     // console.log(req)
@@ -15,6 +17,10 @@ exports.firstPost = async (req, res) => {
 
 exports.register = async (req, res) => {
     const { name, email, password } = req.body
+    const generateUserId = () => {
+        const uuid = uuidv4(); // Generate a UUID
+        return `100-${uuid}`;   // Combine the prefix '100-' with the UUID
+    };
     try {
         const existingUser = await User.findOne({ email })
         const saltRounds = 10
@@ -25,7 +31,8 @@ exports.register = async (req, res) => {
             return res.status(406).json("Account already exist. Please login")
         }
         else {
-            const newUser = new User({ name, email, password: hashedPassword })
+            const newUserId = generateUserId();
+            const newUser = new User({ userId: newUserId, name, email, password: hashedPassword })
             await newUser.save()
             return res.status(200).json("Registered successfully")
         }
@@ -92,14 +99,34 @@ exports.updateUser = async (request, response) => {
 
 exports.adPost = async (req, res) => {
     console.log("\n Entered function body of adPost.")
-    console.log("req.files: ", req.files)
-
-    const formData = req.files
+    console.log("BODY: \n", req.body)
+    console.log("IMAGES: \n", req.files)
+    const formData = req.body
+    const formFiles = req.files
     try {
-        if (formData) {
-            return res.status(200).json({ msg: "data found" })
+        if (formFiles) {
+            const imagePaths = formFiles.map(file => `/images/car/${file.filename}`);
+            const newAd = new AdForm({
+                userId: formData.userId,
+                brand: formData.brand,
+                year: formData.year,
+                fuel: formData.fuel,
+                transmission: formData.transmission,
+                kmDriven: formData.kmDriven,
+                noOfOwners: formData.noOfOwners,
+                adTitle: formData.adTitle,
+                description: formData.description,
+                price: formData.price,
+                imagePath: imagePaths,
+                location: formData.location
+            });
+            await newAd.save();
+            return res.status(200).json({
+                msg: "Images uploaded and data saved successfully.",
+                ad: newAd // Send the saved ad document in the response
+            })
         } else {
-            return res.status(400).json({ msg: "no data found" })
+            return res.status(400).json({ msg: "No files found in the request." })
         }
     } catch (err) {
         return res.status(500).json({ error: err.message })

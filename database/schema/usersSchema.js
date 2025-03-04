@@ -3,6 +3,13 @@ const mongoose = require("mongoose");
 
 // Define User Schema
 const userSchema = new mongoose.Schema({
+    userId: {
+        type: String,
+        required: [true, "UserId is required"],
+        // trim: true,
+        // minlength: 3,
+        // maxlength: 50
+    },
     name: {
         type: String,
         required: [true, "Name is required"],
