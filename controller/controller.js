@@ -104,7 +104,7 @@ exports.adPost = async (req, res) => {
     const formData = req.body
     const formFiles = req.files
     try {
-        if (formFiles) {
+        if (formFiles && formData) {
             const imagePaths = formFiles.map(file => `/images/car/${file.filename}`);
             const newAd = new AdForm({
                 userId: formData.userId,
