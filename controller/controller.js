@@ -60,47 +60,47 @@ exports.login = async (req, res) => {
     }
 }
 
-exports.updateUser = async (request, response) => {
-    const { nameToUpdate, currentEmail, emailIdToUpdate, passwordToUpdate } = request.body
-    console.log(nameToUpdate, currentEmail, emailIdToUpdate, passwordToUpdate);
-
-    try {
-
-        const existingUser = await User.findOne({ email: currentEmail })
-        if (existingUser) {
-
-            try {
-                if (nameToUpdate) existingUser.name = nameToUpdate;
-                if (emailIdToUpdate) existingUser.email = emailIdToUpdate;
-                if (passwordToUpdate) existingUser.password = passwordToUpdate;
-                await existingUser.save();
-
-
-                return response.status(200).json({
-                    msg: `${nameToUpdate ? "name, " : ""}${emailIdToUpdate ? "email, " : ""}${passwordToUpdate ? "password " : ""}updated successfully`.trim().replace(/,\s*$/, "")
-                });
-
-            } catch (error) {
-                return response.status(500).json({ error: error.message });
+exports.updateUser = async (req, res) => {
+    const formData = req.body
+    const formFiles = req.files
+    if (formData && formFiles) {
+        try {
+            const existingUser = await User.findOne({ email: formData.email })
+            if (existingUser) {
+                try {
+                    if (formData.password) {
+                        const saltRounds = 10
+                        const hashedPassword = await bcrypt.hash(formData.password, saltRounds)
+                        existingUser.password = hashedPassword;
+                    }
+                    if (formData.name) existingUser.name = formData.name;
+                    if (formData.mobile) existingUser.mobile = formData.mobile;
+                    if (formData.gender) existingUser.gender = formData.gender;
+                    if (formData.dateOfBirth) existingUser.dateOfBirth = formData.dateOfBirth;
+                    if (formData.bio) existingUser.bio = formData.bio;
+                    if (formData.homeAddress) existingUser.homeAddress = formData.homeAddress;
+                    if (formData.workAddress) existingUser.workAddress = formData.workAddress;
+                    if (formFiles.length > 0) {
+                        const imagePath = formFiles.map(file => `/images/dp/${file.filename}`)
+                        existingUser.dp = imagePath;
+                    }
+                    await existingUser.save();
+                    return res.status(200).json("Updated Successfully");
+                } catch (err) {
+                    return res.status(500).json({ error: err.message })
+                }
             }
-
+            else {
+                return res.status(406).json({ msg: "user not found" })
+            }
+        } catch (err) {
+            return res.status(500).json({ error: err.message })
         }
-
-        else {
-            console.log(existingUser);
-
-            return response.status(406).json({ msg: "user not found" })
-        }
-    } catch (error) {
-        return response.status(400).json("error:", error)
     }
 }
 
 
 exports.adPost = async (req, res) => {
-    console.log("\n Entered function body of adPost.")
-    console.log("BODY: \n", req.body)
-    console.log("IMAGES: \n", req.files)
     const formData = req.body
     const formFiles = req.files
     try {
@@ -132,3 +132,29 @@ exports.adPost = async (req, res) => {
         return res.status(500).json({ error: err.message })
     }
 }
+
+exports.getUserAds = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const ads = await AdForm.find({ userId });
+        if (ads.length === 0) {
+            return res.status(404).json({ message: "No ads found for this user" });
+        }
+        return res.status(200).json(ads);
+    } catch (err) {
+        return res.status(500).json({ error: err.message })
+    }
+};
+
+exports.getUserDetails = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const userDetails = await User.findOne({ userId });
+        if (!userDetails) {
+            return res.status(404).json({ message: "No userDetails found for this userId" });
+        }
+        return res.status(200).json(userDetails);
+    } catch (err) {
+        return res.status(500).json({ error: err.message })
+    }
+};

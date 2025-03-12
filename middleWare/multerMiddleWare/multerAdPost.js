@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
         cb(null, dir)
     },
     filename: (req, file, cb) => {
-        const fileName = `image-${Date.now()}-${path.extname(file.originalname)}`
+        const fileName = `image_${Date.now()}_userAd_${path.extname(file.originalname)}`
         cb(null, fileName)
     }
 })
@@ -31,6 +31,6 @@ const fileFilter = (req, file, cb) => {
     }
 }
 
-const multerConfig = multer({ storage, fileFilter })
+const multerAdPostConfig = multer({ storage, fileFilter })
 
-module.exports = multerConfig
+module.exports = multerAdPostConfig

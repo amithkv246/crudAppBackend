@@ -30,6 +30,28 @@ const userSchema = new mongoose.Schema({
         required: [true, "Password is required"],
         // minlength: 6
     },
+    mobile: {
+        type: Number,
+        minlength: 10
+    },
+    gender: {
+        type: String
+    },
+    dateOfBirth: {
+        type: Date
+    },
+    bio: {
+        type: String
+    },
+    homeAddress: {
+        type: String
+    },
+    workAddress: {
+        type: String
+    },
+    dp: {
+        type: [String]
+    },
     // age: {
     //     type: Number,
     //     min: 18,
