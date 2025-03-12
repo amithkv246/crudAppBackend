@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 exports.verifyToken = (req, res, next) => {
 
     try {
-        console.log("Entered middleware.")
         const token = req.header("Authorization"); // Get token from headers
 
         if (!token) {
