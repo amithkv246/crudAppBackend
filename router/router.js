@@ -1,5 +1,5 @@
 const express = require('express')
-const { firstGet, firstPost, register, login, updateUser, adPost, getUserAds, getUserDetails } = require('../controller/controller')
+const { firstGet, firstPost, register, login, updateUser, adPost, getUserAds, getUserDetails, getAllAds } = require('../controller/controller')
 const { verifyToken } = require('../middleWare/middleWare')
 const multerUpdateUserConfig = require('../middleWare/multerMiddleWare/multerUpdateUser')
 const multerAdPostConfig = require('../middleWare/multerMiddleWare/multerAdPost')
@@ -12,5 +12,6 @@ router.post('/updateUser', verifyToken, multerUpdateUserConfig.array("dp", 1), u
 router.post('/adPost', verifyToken, multerAdPostConfig.array("images", 20), adPost)
 router.get('/getUserAds/:userId', getUserAds);
 router.get('/getUserDetails/:userId', getUserDetails);
+router.get('/getAllAds/:userId', getAllAds);
 
 module.exports = router

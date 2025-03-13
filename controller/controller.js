@@ -158,3 +158,17 @@ exports.getUserDetails = async (req, res) => {
         return res.status(500).json({ error: err.message })
     }
 };
+
+exports.getAllAds = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const allAds = await AdForm.find({ userId: { $ne: userId } });
+        if (allAds) {
+            return res.status(200).json(allAds)
+        } else {
+            return res.status(400).json("No ads found.")
+        }
+    } catch (err) {
+        return res.status(500).json({ error: err.message })
+    }
+}
